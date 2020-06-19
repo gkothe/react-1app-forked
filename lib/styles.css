@@ -1,0 +1,13 @@
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+tab-title {
+  -webkit-flex-wrap: wrap;
+}
