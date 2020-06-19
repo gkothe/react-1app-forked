@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider } from '@material-ui/core';
+import Slider from '@material-ui/core/Slider';
 export default  class Progress extends React.Component {
   constructor(props, context) {
     super(props, context);

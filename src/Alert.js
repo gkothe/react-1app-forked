@@ -1,7 +1,6 @@
-import { RaisedButton, FlatButton } from "@material-ui/core";
+import React from "react";
 import TextInput from "./TextInput";
 import Text from "./Text";
-import React from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -36,6 +35,9 @@ class Alert extends React.Component {
       label: null,
       prompt: prompt
     });
+    this.closeDialog=()=>{
+      this.setState({open: !this.state.open })
+    }
   }
   prompt(titulo, label, value, callback) {
     var bts = [
@@ -61,42 +63,7 @@ class Alert extends React.Component {
       prompt: callback
     });
   }
-  getBts() {
-    let actions = [];
-    if (this.state.bts) {
-      for (var i = 0; i < this.state.bts.length; i++) {
-        let item = this.state.bts[i];
-        if (!item.text) {
-          continue;
-        }
-        actions.unshift(
-          <Button
-            color="primary"
-            onClick={() => {
-              if (item.onPress) {
-                item.onPress();
-              }
-              this.setState({ open: false });
-            }}
-          >
-            {item.text}
-          </Button>
-        );
-      }
-    } else {
-      actions.push(
-        <Button
-          color="primary"
-          onClick={() => {
-            this.setState({ open: false });
-          }}
-        >
-          {"OK"}
-        </Button>
-      );
-    }
-    return actions;
-  }
+
   render() {
     return (
       <Dialog
@@ -137,7 +104,20 @@ class Alert extends React.Component {
           />
         ) : null}
         <DialogActions>
-          {this.props.actions ? this.props.actions : this.getBts()}
+          {this.state.bts&&this.state.bts[0]&&this.state.bts.map((data,key) => {
+            return (
+              <Button key={"key_"+key} onClick={()=>{
+                  if (data.onPress) data.onPress()
+                  if(!data.notClose)this.closeDialog()
+                }} color={data.color||"primary"}>
+                {data.text}
+              </Button>
+            )})
+            ||
+            <Button onClick={()=>this.closeDialog()} color="default">
+              OK
+            </Button>
+          }
         </DialogActions>
       </Dialog>
     );

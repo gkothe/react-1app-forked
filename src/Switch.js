@@ -1,36 +1,49 @@
 import React, { Component } from "react";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 
-import { Content, View, Icon, Text, StyleSheet } from "../";
-import TextField from "@material-ui/core/TextField";
-import { FormControl, FormControlLabel } from "@material-ui/core";
-import moment from "moment";
 import Switch from "@material-ui/core/Switch";
+import RadioButtonChecked from "@material-ui/icons/RadioButtonChecked";
+import RadioButtonUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 
-export default class SwitchViews extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: "Ok" };
-  }
-  getValue() {}
-
-  render() {
-    return (
-      <FormControlLabel
-        control={
-          <Switch
-            color="primary"
-            checked={this.props.value ? this.props.value : false}
-            onChange={e => {
-              var value = e.target.checked;
-              if (this.props.onChange) {
-                this.props.onChange(value);
-              }
-            }}
-            value={this.props.value ? this.props.value : false}
-          />
-        }
-        label={this.props.label}
-      />
-    );
-  }
+export default function (props){
+  if(props.type=="checkbox") return(<SwitchC {...props}/>);
+  return(
+    <SwitchS {...props}/>
+  )
 }
+
+const SwitchS =(props)=>(
+  <FormControlLabel
+    control={
+      <Switch
+        color="primary"
+        {...props}
+        onChange={()=>{
+          props.onChange(!props.value);
+        }}
+        checked={Boolean(props.value==undefined?false:props.value)}
+      />
+    }
+    label={props.label}
+  />
+)
+
+const SwitchC =(props)=>(
+  <FormControlLabel
+    control={
+      <Checkbox
+        color="primary"
+        checkedIcon={<RadioButtonChecked />}
+        icon={<RadioButtonUnchecked />}
+        {...props}
+        onChange={()=>{
+          props.onChange(!props.value);
+        }}
+        checked={Boolean(props.value==undefined?false:props.value)}
+      />
+    }
+    label={props.label}
+  />
+)

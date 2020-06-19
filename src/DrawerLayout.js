@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer } from '@material-ui/core';
+import Drawer from '@material-ui/core/Drawer';
 export default  class ViewDatePicker extends React.Component {
   constructor(props, context) {
     super(props, context);

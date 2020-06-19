@@ -1,122 +1,46 @@
-import React, { Component } from "react";
-import { Content, View, StyleSheet, Progress } from "../";
-import moment from "moment";
+import React from "react";
+import ReactDOM from 'react-dom';
 
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
-} from "@material-ui/core";
-var id = 0;
-export default class SelectInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: props.value };
-    this.id = id++;
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+
+import * as Util from "./Util"
+let conte=0;
+class SelectInput extends React.Component {
+  getList(list=[]){
+    if(list[0]&&(Util.isText(list[0])||Util.isInteger(list[0]))) return list.map(item=>({nome:item,value:item}));
+    return list.map(item=>(Util.assign({value:item.id,nome:item.text},item)));
   }
-  isObject(val) {
-    if (val === null) {
-      return false;
+  render(){
+    conte++;
+    const {label="-",onChange=()=>console.log("onChange"),list=[],value='',key_label='nome',key_value='value',style={}}=this.props;
+    return(
+      <FormControl key={"select_f"+conte} fullWidth variant={this.props.variant} margin="normal" style={style}>
+        <InputLabel htmlFor={this.props.variant=="outlined"?"outlined-age-simple":''}>{label}</InputLabel>
+          <Select
+            key={"select"+conte}
+            {...this.props}
+            value={value||''}
+            onChange={(event,value)=>{
+              let data=(this.getList(list)||[]).find(item=>item[key_value]==event.target.value)
+              onChange(event.target.value,data)
+            }}
+            autoWidth
+            >
+            <MenuItem value={null}>
+              <em>Selecione</em>
+            </MenuItem>
+            {(this.getList(list)||[]).map((item,index)=>(
+              <MenuItem key={conte+"select_key"+index} value={item[key_value]}>{item[key_label]}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )
     }
-    return typeof val === "function" || typeof val === "object";
-  }
-  getLista() {
-    var tags = [];
-    var lista = this.props.list;
-    if (!lista || !lista[0]) return null;
-
-    for (var i = 0; i < lista.length; i++) {
-      let item = lista[i];
-      var name = "";
-      var value = "";
-      if (this.isObject(item)) {
-        if (!item.value && item.objectId) {
-          item.value = item.objectId;
-        }
-        if (!item.value && item.id) {
-          item.value = item.id + "";
-        }
-        if (!item.text && item.nome) {
-          item.text = item.nome;
-        }
-        if (!item.text && item.name) {
-          item.text = item.name;
-        }
-
-        name = item.text ? item.text : item.value;
-        if (item.nome) {
-          name = item.nome;
-        }
-        value = item.value;
-      } else {
-        name = item;
-        value = item;
-      }
-      if (this.props.inputNative) {
-        tags.push(
-          <option key={i + "_sel"} style={{ color: "#777" }} value={value + ""}>
-            {name}
-          </option>
-        );
-      } else {
-        tags.push(
-          <MenuItem key={i + "_sel"} value={value + ""}>
-            {name}
-          </MenuItem>
-        );
-      }
-    }
-    if (lista[0]) {
-      let item = lista[0];
-      let value = this.isObject(item) ? item.value : item;
-      setTimeout(() => {
-        if (
-          this.props.onChange &&
-          value &&
-          (this.props.value + "" == "undefined" ||
-            this.props.value + "" == "null")
-        ) {
-          //   this.props.onChange(value, value, 0);
-        }
-      }, 100);
-    }
-    return tags;
   }
 
-  //   shouldComponentUpdate(nextProps, nextState) {
-  //     if (nextProps.value !== this.state.value) {
-  //         nextState.value = nextProps.value
-  //       return true;
-  //     }
-  //     return false;
-  //   }
 
-  render() {
-    return (
-      <FormControl
-        style={{
-          width: "100%"
-        }}
-      >
-        <InputLabel htmlFor={this.id + "select"}>{this.props.label}</InputLabel>
-        <Select
-          autoWidth={true}
-          value={this.props.value ? this.props.value +"" : ""}
-          onChange={e => {
-            var value = e.target.value;
-            this.setState({ value: value });
-            if (this.props.onChange) this.props.onChange(value, value, 0);
-          }}
-          inputProps={{
-            name: this.id + "select",
-            id: this.id + "select"
-          }}
-        >
-          {this.getLista()}
-        </Select>
-      </FormControl>
-    );
-  }
-}
+  export default SelectInput;

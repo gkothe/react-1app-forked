@@ -1,46 +1,35 @@
 import React, { Component } from "react";
-
-import { Content, View, Icon, Text, StyleSheet } from "../";
-import TextField from "@material-ui/core/TextField";
-import { FormControl } from "@material-ui/core";
 import moment from "moment";
-export default class DatePicker extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: "Ok" };
-  }
-  getValue() {
-    var v = this.props.value;
-    if (!v) {
-      v = moment().format("YYYY-MM-DD");
-      if (this.props.onChange) this.props.onChange(v);
-    }
-    var value = moment(v).format("YYYY-MM-DD");
-    return value;
-  }
+import { MuiPickersUtilsProvider, TimePicker, DatePicker,DateTimePicker } from 'material-ui-pickers';
+import "moment/locale/pt-br";
+import MomentUtils from "@date-io/moment";
+import * as Util from "./Util";
 
-  render() {
-    return (
-      <FormControl
-        style={{
-          width: "100%"
-        }}
-      >
-        <TextField
-          id="date"
-          label={this.props.label}
-          type="date"
-          value={this.getValue()}
-          onChange={e => {
-            var value = e.target.value;
-            value = moment(value).toJSON();
-            if (this.props.onChange) this.props.onChange(value);
-          }}
-          InputLabelProps={{
-            // shrink: true
-          }}
-        />
-      </FormControl>
-    );
+const DateP =(props) => {
+  const Picker = getType(props.type);
+  return (
+    <MuiPickersUtilsProvider
+      libInstance={moment}
+      utils={MomentUtils}
+      locale={"pt-br"}
+    >
+      <Picker fullWidth ampm={false} {...props} type={null} style={Util.styleMack([{ marginTop: 20}, props.style ])} />
+    </MuiPickersUtilsProvider>
+  );
+}
+
+function getType(type) {
+  switch (type) {
+    case "time":
+      return TimePicker;
+    case "date":
+      return DatePicker;
+    case "datetime-local":
+      return DateTimePicker;
+    default:
+      return DateTimePicker;
   }
 }
+
+
+export default DateP;
